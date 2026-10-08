@@ -1,0 +1,14 @@
+{
+  "model": "Artificial Neural Network (ANN)",
+  "architecture": [64, 32, 16, 1],
+  "regularization": ["BatchNormalization", "Dropout(0.2)"],
+  "optimizer": "adam",
+  "loss_function": "mse",
+  "metrics": {
+    "mae_kw": 0.0573,
+    "mse_kw2": 0.0061,
+    "rmse_kw": 0.0783,
+    "r2_score": 0.9943
+  },
+  "dataset": "UCI Individual Household Electric Power Consumption"
+}

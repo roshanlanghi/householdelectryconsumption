@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
+import plotly.express as px
+import plotly.graph_objects as go
 
 # Suppress TensorFlow logging
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -17,85 +19,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Custom Styling for modern premium UI
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Outfit', sans-serif;
-    }
-
-    .main-title {
-        font-size: 2.3rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #2563EB 0%, #7C3AED 50%, #EC4899 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.2rem;
-    }
-
-    .sub-title {
-        color: #64748B;
-        font-size: 1.05rem;
-        font-weight: 400;
-        margin-bottom: 1.5rem;
-    }
-
-    .metric-card {
-        background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 14px;
-        padding: 1.2rem;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .metric-card:hover {
-        transform: translateY(-2px);
-        border-color: #7C3AED;
-    }
-
-    .metric-num {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #38BDF8;
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .metric-label {
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #94A3B8;
-        margin-top: 0.2rem;
-    }
-
-    .prediction-box {
-        background: linear-gradient(135deg, #1E1B4B 0%, #1E293B 100%);
-        border: 2px solid #6366F1;
-        border-radius: 18px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25);
-    }
-
-    .pred-val {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #38BDF8;
-        font-family: 'JetBrains Mono', monospace;
-        letter-spacing: -1px;
-    }
-
-    .stButton>button {
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 # Helper Paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,11 +72,14 @@ def load_sample_data():
         return df
     return None
 
-# Sidebar Navigation
+# Sidebar Navigation & Settings
 with st.sidebar:
     st.markdown("## ⚡ **PowerANN System**")
     st.markdown("Artificial Neural Network for Electric Power Consumption Prediction")
     st.markdown("---")
+    
+    # Theme Toggle: Light (White) by default!
+    dark_theme = st.toggle("🌙 Dark Mode", value=False)
     
     page = st.radio(
         "Navigation Menu",
@@ -162,6 +88,7 @@ with st.sidebar:
             "📊 Data Analysis",
             "📈 Consumption Visualizations",
             "🤖 ANN Prediction Engine",
+            "📁 Batch CSV Prediction",
             "📉 Model Performance"
         ],
         index=0
@@ -188,6 +115,136 @@ with st.sidebar:
     - **Target:** Global Active Power (kW)
     """)
     st.caption("Developed by Roshan Langhi")
+
+# Dynamic High-Contrast Styling based on Theme Toggle
+if dark_theme:
+    bg_color = "#0F172A"
+    text_primary = "#F8FAFC"
+    sub_title_color = "#94A3B8"
+    card_bg = "linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))"
+    card_border = "rgba(255, 255, 255, 0.12)"
+    metric_num_color = "#38BDF8"
+    metric_label_color = "#94A3B8"
+    pred_box_bg = "linear-gradient(135deg, #1E1B4B 0%, #1E293B 100%)"
+    pred_box_border = "#6366F1"
+    pred_header_color = "#A5B4FC"
+    pred_val_color = "#38BDF8"
+    pred_sub_color = "#CBD5E1"
+    plotly_template = "plotly_dark"
+else:
+    bg_color = "#FFFFFF"
+    text_primary = "#0F172A"
+    sub_title_color = "#334155"
+    card_bg = "linear-gradient(145deg, #F8FAFC, #EDF2F7)"
+    card_border = "#CBD5E1"
+    metric_num_color = "#1E40AF"
+    metric_label_color = "#1E293B"
+    pred_box_bg = "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)"
+    pred_box_border = "#3B82F6"
+    pred_header_color = "#1E3A8A"
+    pred_val_color = "#1D4ED8"
+    pred_sub_color = "#1E293B"
+    plotly_template = "plotly_white"
+
+st.markdown(f"""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    html, body, [class*="css"] {{
+        font-family: 'Outfit', sans-serif;
+    }}
+
+    .stApp {{
+        background-color: {bg_color};
+        color: {text_primary};
+    }}
+
+    .main-title {{
+        font-size: 2.3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1D4ED8 0%, #6D28D9 50%, #DB2777 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.2rem;
+    }}
+
+    .sub-title {{
+        color: {sub_title_color};
+        font-size: 1.05rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+    }}
+
+    .metric-card {{
+        background: {card_bg};
+        border: 1px solid {card_border};
+        border-radius: 14px;
+        padding: 1.2rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }}
+    .metric-card:hover {{
+        transform: translateY(-2px);
+        border-color: #6D28D9;
+    }}
+
+    .metric-num {{
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: {metric_num_color};
+        font-family: 'JetBrains Mono', monospace;
+    }}
+
+    .metric-label {{
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: {metric_label_color};
+        font-weight: 700;
+        margin-top: 0.2rem;
+    }}
+
+    .prediction-box {{
+        background: {pred_box_bg};
+        border: 2px solid {pred_box_border};
+        border-radius: 18px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    }}
+
+    .pred-header {{
+        font-size: 1.1rem;
+        color: {pred_header_color};
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }}
+
+    .pred-val {{
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: {pred_val_color};
+        font-family: 'JetBrains Mono', monospace;
+        letter-spacing: -1px;
+    }}
+
+    .pred-sub {{
+        margin-top: 1rem;
+        color: {pred_sub_color};
+        font-size: 0.95rem;
+        font-weight: 600;
+    }}
+
+    .stButton>button {{
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }}
+</style>
+""", unsafe_allow_html=True)
 
 # ----------------- PAGE 1: HOME & OVERVIEW -----------------
 if page == "🏠 Home & Overview":
@@ -279,44 +336,80 @@ elif page == "📊 Data Analysis":
             ['Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity', 'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3']
         )
         
-        fig, ax = plt.subplots(figsize=(9, 4))
-        sns.histplot(df[feature_choice], kde=True, ax=ax, color='#3B82F6', bins=50)
-        ax.set_title(f"Distribution of {feature_choice}", fontsize=13, fontweight='bold')
-        ax.set_xlabel(feature_choice)
-        ax.set_ylabel("Count")
-        st.pyplot(fig)
-        plt.close()
+        fig = px.histogram(
+            df, x=feature_choice, marginal="rug",
+            title=f"Distribution of {feature_choice}",
+            template=plotly_template,
+            color_discrete_sequence=['#2563EB']
+        )
+        st.plotly_chart(fig, use_container_width=True)
     else:
-        st.warning("Cleaned data file not found. Please ensure pipeline has completed.")
+        st.warning("Cleaned data file not found. Please ensure dataset pipeline is initialized.")
 
 # ----------------- PAGE 3: CONSUMPTION VISUALIZATIONS -----------------
 elif page == "📈 Consumption Visualizations":
     st.markdown('<div class="main-title">Consumption Visualizations</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Detailed graphical insights into household power dynamics.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Detailed graphical insights into household power dynamics with interactive exploration.</div>', unsafe_allow_html=True)
 
-    fig_active_dist = os.path.join(FIGURES_DIR, "active_power_distribution.png")
-    fig_hourly = os.path.join(FIGURES_DIR, "hourly_consumption.png")
-    fig_heatmap = os.path.join(FIGURES_DIR, "correlation_heatmap.png")
-    fig_submetering = os.path.join(FIGURES_DIR, "sub_metering_distribution.png")
+    df_sample = load_sample_data()
 
     tab1, tab2, tab3 = st.tabs(["🕒 Temporal Patterns", "🔥 Correlation Analysis", "🔌 Sub-Metering Breakdown"])
 
     with tab1:
         st.subheader("Hourly Energy Consumption Curve")
-        if os.path.exists(fig_hourly):
-            st.image(fig_hourly, use_column_width=True)
+        if df_sample is not None and 'Hour' in df_sample.columns and 'Global_active_power' in df_sample.columns:
+            hourly_avg = df_sample.groupby('Hour')['Global_active_power'].mean().reset_index()
+            fig = px.line(
+                hourly_avg, x='Hour', y='Global_active_power',
+                title="Average Global Active Power by Hour of Day",
+                labels={'Hour': 'Hour of Day (0-23)', 'Global_active_power': 'Mean Active Power (kW)'},
+                markers=True,
+                template=plotly_template
+            )
+            fig.update_traces(line_color='#2563EB', line_width=3)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            fig_hourly = os.path.join(FIGURES_DIR, "hourly_consumption.png")
+            if os.path.exists(fig_hourly):
+                st.image(fig_hourly, use_column_width=True)
         st.info("💡 **Observation:** Consumption peaks during early evening (19:00 - 22:00) corresponding to meal preparation, lighting, and home appliances.")
 
     with tab2:
         st.subheader("Feature Correlation Matrix")
-        if os.path.exists(fig_heatmap):
-            st.image(fig_heatmap, use_column_width=True)
+        if df_sample is not None:
+            numeric_cols = df_sample.select_dtypes(include=[np.number]).columns
+            corr = df_sample[numeric_cols].corr()
+            fig = px.imshow(
+                corr, text_auto=".2f",
+                color_continuous_scale="Blues" if not dark_theme else "Viridis",
+                title="Feature Correlation Heatmap",
+                template=plotly_template
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            fig_heatmap = os.path.join(FIGURES_DIR, "correlation_heatmap.png")
+            if os.path.exists(fig_heatmap):
+                st.image(fig_heatmap, use_column_width=True)
         st.info("💡 **Observation:** Near-perfect collinearity between `Global_intensity` and `Global_active_power` (~0.99) reflects Ohm's and Joule's electrical laws (P ≈ V × I).")
 
     with tab3:
         st.subheader("Sub-Metering Breakdown by Appliance Category")
-        if os.path.exists(fig_submetering):
-            st.image(fig_submetering, use_column_width=True)
+        if df_sample is not None and all(c in df_sample.columns for c in ['Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3']):
+            sub_df = df_sample[['Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3']].mean().reset_index()
+            sub_df.columns = ['Sub_metering', 'Average_Wh']
+            sub_df['Category'] = ['Kitchen (Sub 1)', 'Laundry (Sub 2)', 'Water Heater / AC (Sub 3)']
+            fig = px.bar(
+                sub_df, x='Category', y='Average_Wh',
+                color='Category',
+                title="Average Watt-Hours (Wh) by Sub-Metering Appliance Category",
+                template=plotly_template,
+                text_auto=".2f"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            fig_submetering = os.path.join(FIGURES_DIR, "sub_metering_distribution.png")
+            if os.path.exists(fig_submetering):
+                st.image(fig_submetering, use_column_width=True)
         st.markdown("""
         - **Sub-Metering 1 (Kitchen):** Dishwasher, microwave, oven
         - **Sub-Metering 2 (Laundry):** Washing machine, tumble-dryer, refrigerator
@@ -445,13 +538,9 @@ elif page == "🤖 ANN Prediction Engine":
             st.markdown("---")
             st.markdown(f"""
             <div class="prediction-box">
-                <div style="font-size: 1.1rem; color: #A5B4FC; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">
-                    Predicted Active Electricity Consumption
-                </div>
-                <div class="pred-val">{prediction_kw:.3f} <span style="font-size: 1.8rem; color: #94A3B8;">kW</span></div>
-                <div style="margin-top: 1rem; color: #CBD5E1; font-size: 0.95rem;">
-                    Equivalent to <b>{prediction_kw * 1000:.0f} Watts</b> instantaneous household demand.
-                </div>
+                <div class="pred-header">Predicted Active Electricity Consumption</div>
+                <div class="pred-val">{prediction_kw:.3f} <span style="font-size: 1.8rem; font-weight: 600;">kW</span></div>
+                <div class="pred-sub">Equivalent to <b>{prediction_kw * 1000:.0f} Watts</b> instantaneous household demand.</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -461,7 +550,6 @@ elif page == "🤖 ANN Prediction Engine":
                 tier = "🟢 Low Load" if prediction_kw < 1.0 else ("🟡 Moderate Load" if prediction_kw < 3.0 else "🔴 High Load")
                 st.metric("Consumption Tier", tier)
             with tier_col2:
-                # Electricity cost in Indian Rupees (₹)
                 est_hourly_cost = prediction_kw * tariff_per_unit
                 st.metric(
                     "Estimated Cost / Hour",
@@ -476,7 +564,66 @@ elif page == "🤖 ANN Prediction Engine":
                     f"₹{est_daily_cost:.2f} / day"
                 )
 
-# ----------------- PAGE 5: MODEL PERFORMANCE -----------------
+# ----------------- PAGE 5: BATCH CSV PREDICTION -----------------
+elif page == "📁 Batch CSV Prediction":
+    st.markdown('<div class="main-title">Batch CSV Prediction Engine</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Upload a batch CSV file containing household telemetry to generate batch predictions.</div>', unsafe_allow_html=True)
+
+    model, scaler = load_model_and_scaler()
+
+    if model is None or scaler is None:
+        st.error("Model or Scaler not loaded. Please ensure models are trained and present in `models/`.")
+    else:
+        feature_names = [
+            'Global_reactive_power', 'Voltage', 'Global_intensity',
+            'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3',
+            'Hour', 'Day', 'Month', 'DayOfWeek'
+        ]
+
+        st.info(f"📋 **Required CSV Columns:** `{', '.join(feature_names)}` (or a `Datetime` column from which Hour/Day/Month/DayOfWeek can be parsed).")
+
+        uploaded_file = st.file_uploader("Upload CSV File for Batch Prediction", type=["csv"])
+
+        if uploaded_file is not None:
+            try:
+                batch_df = pd.read_csv(uploaded_file)
+                st.write(f"Loaded CSV with {len(batch_df)} rows.")
+
+                # If Datetime present and missing temporal columns, parse them
+                if 'Datetime' in batch_df.columns:
+                    dt_col = pd.to_datetime(batch_df['Datetime'])
+                    if 'Hour' not in batch_df.columns: batch_df['Hour'] = dt_col.dt.hour
+                    if 'Day' not in batch_df.columns: batch_df['Day'] = dt_col.dt.day
+                    if 'Month' not in batch_df.columns: batch_df['Month'] = dt_col.dt.month
+                    if 'DayOfWeek' not in batch_df.columns: batch_df['DayOfWeek'] = dt_col.dt.dayofweek
+
+                missing_cols = [c for c in feature_names if c not in batch_df.columns]
+                if missing_cols:
+                    st.error(f"Missing required columns in CSV: {missing_cols}")
+                else:
+                    scaled_inputs = scaler.transform(batch_df[feature_names])
+                    raw_preds = model.predict(scaled_inputs)
+                    preds = [max(0.0, float(p[0])) for p in raw_preds]
+                    batch_df['Predicted_Global_active_power_kW'] = preds
+                    batch_df['Estimated_Cost_INR'] = [p * tariff_per_unit for p in preds]
+
+                    st.success("Batch Prediction Completed Successfully!")
+                    st.dataframe(batch_df.head(100), use_container_width=True)
+
+                    total_kwh = sum(preds)
+                    st.metric("Total Batch Predicted Consumption", f"{total_kwh:.2f} kWh", f"₹{total_kwh * tariff_per_unit:.2f} Total Cost")
+
+                    csv_data = batch_df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="📥 Download Predictions CSV",
+                        data=csv_data,
+                        file_name="electricity_predictions.csv",
+                        mime="text/csv"
+                    )
+            except Exception as e:
+                st.error(f"Error processing CSV file: {str(e)}")
+
+# ----------------- PAGE 6: MODEL PERFORMANCE -----------------
 elif page == "📉 Model Performance":
     st.markdown('<div class="main-title">ANN Performance & Evaluation</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">Quantitative and visual metrics computed on the test dataset.</div>', unsafe_allow_html=True)

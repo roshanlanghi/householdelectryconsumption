@@ -97,20 +97,23 @@ The dataset contains missing values, making it suitable for demonstrating real-w
 ### Data Visualization
 
 - Matplotlib
-- Seaborn
+### Interactive & Dynamic Visualization
 
-### Machine Learning
+- Plotly Express & Plotly Objects
+
+### Machine Learning & Deep Learning
 
 - Scikit-learn
-
-### Deep Learning
-
-- TensorFlow
-- Keras
+- TensorFlow / Keras
 
 ### Web Application
 
 - Streamlit
+
+### Testing & Automation
+
+- Python `unittest`
+- Makefile automation
 
 ### Development Environment
 
@@ -128,7 +131,7 @@ household-electricity-ann/
 │
 ├── data/
 │   ├── raw/
-│   │   └── household_power_consumption.txt
+│   │   └── household_power_consumption.txt (Auto-downloaded)
 │   │
 │   └── processed/
 │       └── cleaned_data.csv
@@ -143,14 +146,23 @@ household-electricity-ann/
 │
 ├── models/
 │   ├── electricity_ann.keras
+│   ├── ann_weights.pkl
 │   └── scaler.pkl
 │
 ├── dashboard/
 │   └── app.py
 │
 ├── reports/
-│   └── figures/
+│   ├── figures/
+│   ├── metrics.txt
+│   └── metrics.json
 │
+├── tests/
+│   └── test_model.py
+│
+├── download_data.py
+├── Makefile
+├── LICENSE
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -162,19 +174,18 @@ household-electricity-ann/
 
 ## Phase 1 — Data Collection
 
-Download the dataset from the UCI Machine Learning Repository.
+Download the dataset automatically from the UCI Machine Learning Repository:
 
-Place the downloaded file inside:
-
-```text
-data/raw/
+```bash
+python download_data.py
+```
+*Or using Makefile:*
+```bash
+make download
 ```
 
-Expected file:
+This script will fetch and unpack `household_power_consumption.txt` into `data/raw/` automatically.
 
-```text
-household_power_consumption.txt
-```
 
 ---
 
@@ -607,51 +618,19 @@ This shows how closely the ANN follows the real values.
 
 # 🌐 Phase 13 — Streamlit Dashboard
 
-A simple Streamlit dashboard will be created to demonstrate the trained model.
+# 🌐 Phase 13 — Streamlit Dashboard
+
+An interactive Streamlit dashboard demonstrates the trained model in real-time.
 
 ### Dashboard Features
 
 ```text
-🏠 Home
-📊 Data Analysis
-📈 Consumption Visualization
-🤖 ANN Prediction
-📉 Model Performance
-```
-
-The user can enter/select relevant electricity parameters and obtain a predicted consumption value.
-
----
-
-# 🖥️ Example Dashboard
-
-```text
-================================================
-     HOUSEHOLD ELECTRICITY PREDICTION
-================================================
-
-Global Reactive Power     [      ]
-
-Voltage                   [      ]
-
-Global Intensity          [      ]
-
-Sub Metering 1            [      ]
-
-Sub Metering 2            [      ]
-
-Sub Metering 3            [      ]
-
-Hour                      [      ]
-
-              [ PREDICT ]
-
-------------------------------------------------
-
-Predicted Electricity Consumption:
-
-             2.84 kW
-------------------------------------------------
+🏠 Home & Overview              - Key metrics & architecture overview
+📊 Data Analysis                - Dataset explorer & distribution plots
+📈 Consumption Visualization    - Interactive Plotly breakdown & temporal curves
+🤖 ANN Prediction Engine        - Real-time single prediction & Indian electricity tariff calculator
+📁 Batch CSV Prediction         - Upload telemetry CSV for bulk inference & export results
+📉 Model Performance            - MAE, MSE, RMSE, R² scores & training loss curves
 ```
 
 ---
@@ -661,13 +640,13 @@ Predicted Electricity Consumption:
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/household-electricity-ann.git
+git clone https://github.com/roshanlanghi/householdelectryconsumption.git
 ```
 
 Navigate to the project:
 
 ```bash
-cd household-electricity-ann
+cd householdelectryconsumption
 ```
 
 Create a virtual environment:
@@ -687,35 +666,47 @@ Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+*Or using Makefile:*
+```bash
+make install
+```
 
 ---
 
 # 📋 Requirements
 
-The main libraries required are:
+The main dependencies in `requirements.txt`:
 
 ```text
-pandas
-numpy
-matplotlib
-seaborn
-scikit-learn
-tensorflow
-streamlit
-joblib
-```
-
-Install them using:
-
-```bash
-pip install pandas numpy matplotlib seaborn scikit-learn tensorflow streamlit joblib
+pandas>=2.0.0
+numpy>=1.24.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scikit-learn>=1.2.0
+tensorflow>=2.13.0
+streamlit>=1.30.0
+plotly>=5.15.0
+joblib>=1.3.0
+requests>=2.28.0
 ```
 
 ---
 
 # ▶️ Running the Project
 
-## Run Jupyter Notebook
+## 1. Download Dataset Automatically
+
+```bash
+python download_data.py
+```
+*Or:*
+```bash
+make download
+```
+
+---
+
+## 2. Run Jupyter Notebooks
 
 ```bash
 jupyter notebook
@@ -731,11 +722,30 @@ and execute the notebooks in sequence.
 
 ---
 
-## Run Streamlit Dashboard
+## 3. Run Streamlit Dashboard
 
 ```bash
 streamlit run dashboard/app.py
 ```
+*Or:*
+```bash
+make dashboard
+```
+
+The dashboard will open automatically in your web browser.
+
+---
+
+## 4. Run Unit Tests
+
+```bash
+python -m unittest discover tests/
+```
+*Or:*
+```bash
+make test
+```
+
 
 The dashboard will open in your browser.
 
