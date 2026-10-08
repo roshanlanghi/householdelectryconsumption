@@ -4,7 +4,6 @@ numpy
 matplotlib
 seaborn
 scikit-learn==1.7.2
-tensorflow==2.20.0
 plotly
 joblib
 requests
