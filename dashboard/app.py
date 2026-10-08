@@ -104,15 +104,42 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "electricity_ann.keras")
 SCALER_PATH = os.path.join(BASE_DIR, "models", "scaler.pkl")
 FIGURES_DIR = os.path.join(BASE_DIR, "reports", "figures")
 
+class NumpyANN:
+    """Ultra-fast, zero-overhead neural network forward pass for cloud deployment."""
+    def __init__(self, weights):
+        self.w = weights
+
+    def predict(self, X):
+        X = np.asarray(X, dtype=np.float32)
+        w = self.w
+        z1 = np.maximum(0, np.dot(X, w['w0']) + w['b0'])
+        z1_bn = w['gamma'] * (z1 - w['mean']) / np.sqrt(w['var'] + 1e-3) + w['beta']
+        z2 = np.maximum(0, np.dot(z1_bn, w['w1']) + w['b1'])
+        z3 = np.maximum(0, np.dot(z2, w['w2']) + w['b2'])
+        out = np.dot(z3, w['w3']) + w['b3']
+        return out
+
 @st.cache_resource
 def load_model_and_scaler():
     try:
-        import tensorflow as tf
-        model = tf.keras.models.load_model(MODEL_PATH)
         scaler = joblib.load(SCALER_PATH)
-        return model, scaler
+        # Attempt TensorFlow first if available
+        try:
+            import tensorflow as tf
+            if os.path.exists(MODEL_PATH):
+                model = tf.keras.models.load_model(MODEL_PATH)
+                return model, scaler
+        except Exception:
+            pass
+
+        # Resilient cloud-optimized loader
+        weights_path = os.path.join(BASE_DIR, "models", "ann_weights.pkl")
+        if os.path.exists(weights_path):
+            weights = joblib.load(weights_path)
+            return NumpyANN(weights), scaler
     except Exception as e:
-        return None, None
+        pass
+    return None, None
 
 @st.cache_data
 def load_sample_data():
