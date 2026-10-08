@@ -114,7 +114,7 @@ with st.sidebar:
     - **Batch Norm & Dropout:** Applied
     - **Target:** Global Active Power (kW)
     """)
-    st.caption("Developed by Roshan Langhi")
+    
 
 # Dynamic High-Contrast Styling based on Theme Toggle
 if dark_theme:
