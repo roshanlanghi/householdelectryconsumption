@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Data (exclude massive raw data files exceeding GitHub 100MB limit)
+data/raw/*
+!data/raw/.gitkeep
+
+
+# Models & temp
+*.log
+.DS_Store
+Thumbs.db

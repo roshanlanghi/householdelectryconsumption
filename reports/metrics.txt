@@ -1,0 +1,6 @@
+Model Evaluation Metrics:
+-------------------------
+MAE:  0.0573 kW
+MSE:  0.0061 kW^2
+RMSE: 0.0783 kW
+R2:   0.9943
