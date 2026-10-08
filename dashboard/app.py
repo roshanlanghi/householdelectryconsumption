@@ -328,7 +328,8 @@ elif page == "📊 Data Analysis":
         st.dataframe(df.head(50), use_container_width=True)
 
         st.subheader("📊 Descriptive Statistics")
-        st.dataframe(df.describe().T, use_container_width=True)
+        numeric_df = df.select_dtypes(include=[np.number])
+        st.dataframe(numeric_df.describe().T, use_container_width=True)
 
         st.subheader("🔍 Feature Distribution Explorer")
         feature_choice = st.selectbox(
@@ -371,7 +372,7 @@ elif page == "📈 Consumption Visualizations":
         else:
             fig_hourly = os.path.join(FIGURES_DIR, "hourly_consumption.png")
             if os.path.exists(fig_hourly):
-                st.image(fig_hourly, use_column_width=True)
+                st.image(fig_hourly, use_container_width=True)
         st.info("💡 **Observation:** Consumption peaks during early evening (19:00 - 22:00) corresponding to meal preparation, lighting, and home appliances.")
 
     with tab2:
@@ -389,7 +390,7 @@ elif page == "📈 Consumption Visualizations":
         else:
             fig_heatmap = os.path.join(FIGURES_DIR, "correlation_heatmap.png")
             if os.path.exists(fig_heatmap):
-                st.image(fig_heatmap, use_column_width=True)
+                st.image(fig_heatmap, use_container_width=True)
         st.info("💡 **Observation:** Near-perfect collinearity between `Global_intensity` and `Global_active_power` (~0.99) reflects Ohm's and Joule's electrical laws (P ≈ V × I).")
 
     with tab3:
@@ -409,7 +410,7 @@ elif page == "📈 Consumption Visualizations":
         else:
             fig_submetering = os.path.join(FIGURES_DIR, "sub_metering_distribution.png")
             if os.path.exists(fig_submetering):
-                st.image(fig_submetering, use_column_width=True)
+                st.image(fig_submetering, use_container_width=True)
         st.markdown("""
         - **Sub-Metering 1 (Kitchen):** Dishwasher, microwave, oven
         - **Sub-Metering 2 (Laundry):** Washing machine, tumble-dryer, refrigerator
@@ -667,11 +668,11 @@ elif page == "📉 Model Performance":
     with col_l:
         st.subheader("📉 Training vs. Validation Loss")
         if os.path.exists(fig_loss):
-            st.image(fig_loss, use_column_width=True)
+            st.image(fig_loss, use_container_width=True)
         st.caption("Batch Normalization and Dropout ensure convergence without overfitting.")
 
     with col_r:
         st.subheader("🎯 Actual vs. Predicted Curve")
         if os.path.exists(fig_actual_pred):
-            st.image(fig_actual_pred, use_column_width=True)
+            st.image(fig_actual_pred, use_container_width=True)
         st.caption("Demonstrating high tracking fidelity between actual test samples and ANN output.")
