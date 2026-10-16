@@ -4,7 +4,10 @@ import joblib
 import numpy as np
 import pandas as pd
 
+import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 SCALER_PATH = os.path.join(BASE_DIR, "models", "scaler.pkl")
 WEIGHTS_PATH = os.path.join(BASE_DIR, "models", "ann_weights.pkl")
 

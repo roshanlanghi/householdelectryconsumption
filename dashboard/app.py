@@ -118,32 +118,76 @@ with st.sidebar:
 
 # Dynamic High-Contrast Styling based on Theme Toggle
 if dark_theme:
-    bg_color = "#0F172A"
+    bg_color = "#0B0F19"
+    sidebar_bg = "#070A12"
+    sidebar_border = "rgba(255, 255, 255, 0.08)"
     text_primary = "#F8FAFC"
-    sub_title_color = "#94A3B8"
-    card_bg = "linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))"
+    text_secondary = "#94A3B8"
+    heading_color = "#FFFFFF"
+    card_bg = "linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7))"
     card_border = "rgba(255, 255, 255, 0.12)"
+    card_shadow = "0 8px 24px rgba(0, 0, 0, 0.3)"
+    input_bg = "#111827"
+    input_border = "#374151"
+    input_text = "#F9FAFB"
+    btn_bg = "#1E293B"
+    btn_border = "#334155"
+    btn_text = "#F8FAFC"
+    btn_hover_bg = "#334155"
+    btn_hover_border = "#60A5FA"
+    btn_hover_text = "#FFFFFF"
+    form_bg = "rgba(17, 24, 39, 0.6)"
+    form_border = "rgba(255, 255, 255, 0.1)"
+    metric_card_bg = "linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8))"
     metric_num_color = "#38BDF8"
     metric_label_color = "#94A3B8"
-    pred_box_bg = "linear-gradient(135deg, #1E1B4B 0%, #1E293B 100%)"
+    pred_box_bg = "linear-gradient(135deg, #1E1B4B 0%, #0F172A 100%)"
     pred_box_border = "#6366F1"
     pred_header_color = "#A5B4FC"
     pred_val_color = "#38BDF8"
     pred_sub_color = "#CBD5E1"
+    tab_text = "#94A3B8"
+    tab_active_text = "#38BDF8"
+    tab_active_border = "#38BDF8"
+    code_bg = "#111827"
+    code_text = "#E2E8F0"
+    code_border = "rgba(255, 255, 255, 0.12)"
     plotly_template = "plotly_dark"
 else:
     bg_color = "#FFFFFF"
+    sidebar_bg = "#F8FAFC"
+    sidebar_border = "#E2E8F0"
     text_primary = "#0F172A"
-    sub_title_color = "#334155"
-    card_bg = "linear-gradient(145deg, #F8FAFC, #EDF2F7)"
-    card_border = "#CBD5E1"
-    metric_num_color = "#1E40AF"
-    metric_label_color = "#1E293B"
+    text_secondary = "#475569"
+    heading_color = "#0F172A"
+    card_bg = "#FFFFFF"
+    card_border = "#E2E8F0"
+    card_shadow = "0 4px 16px rgba(0, 0, 0, 0.06)"
+    input_bg = "#FFFFFF"
+    input_border = "#CBD5E1"
+    input_text = "#0F172A"
+    btn_bg = "#FFFFFF"
+    btn_border = "#CBD5E1"
+    btn_text = "#0F172A"
+    btn_hover_bg = "#EFF6FF"
+    btn_hover_border = "#2563EB"
+    btn_hover_text = "#1D4ED8"
+    form_bg = "#FFFFFF"
+    form_border = "#E2E8F0"
+    metric_card_bg = "linear-gradient(145deg, #FFFFFF, #F8FAFC)"
+    metric_num_color = "#1D4ED8"
+    metric_label_color = "#334155"
     pred_box_bg = "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)"
     pred_box_border = "#3B82F6"
     pred_header_color = "#1E3A8A"
     pred_val_color = "#1D4ED8"
     pred_sub_color = "#1E293B"
+    tab_text = "#475569"
+    tab_active_text = "#1D4ED8"
+    tab_active_border = "#1D4ED8"
+    code_bg = "#F8FAFC"
+    code_text = "#0F172A"
+    code_border = "#E2E8F0"
     plotly_template = "plotly_white"
 
 st.markdown(f"""
@@ -155,7 +199,43 @@ st.markdown(f"""
     }}
 
     .stApp {{
-        background-color: {bg_color};
+        background-color: {bg_color} !important;
+        color: {text_primary} !important;
+    }}
+
+    /* Seamless Header Integration */
+    header[data-testid="stHeader"] {{
+        background-color: {bg_color} !important;
+        color: {text_primary} !important;
+    }}
+    header[data-testid="stHeader"] svg,
+    header[data-testid="stHeader"] button {{
+        fill: {text_primary} !important;
+        color: {text_primary} !important;
+    }}
+
+    /* Code Blocks & Architecture Visuals */
+    pre, code, [data-testid="stCodeBlock"], [data-testid="stCodeBlock"] pre, [data-testid="stCodeBlock"] code {{
+        background-color: {code_bg} !important;
+        color: {code_text} !important;
+        border: 1px solid {code_border} !important;
+        border-radius: 12px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+    }}
+
+    /* Global Typography & Headings */
+    h1, h2, h3, h4, h5, h6,
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stMarkdownContainer"] h4,
+    [data-testid="stMarkdownContainer"] h5,
+    [data-testid="stMarkdownContainer"] h6 {{
+        color: {heading_color} !important;
+        font-weight: 700 !important;
+    }}
+
+    p, [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] span {{
         color: {text_primary};
     }}
 
@@ -169,19 +249,262 @@ st.markdown(f"""
     }}
 
     .sub-title {{
-        color: {sub_title_color};
+        color: {text_secondary} !important;
         font-size: 1.05rem;
         font-weight: 500;
         margin-bottom: 1.5rem;
     }}
 
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {{
+        background-color: {sidebar_bg} !important;
+        border-right: 1px solid {sidebar_border} !important;
+    }}
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div {{
+        color: {text_primary} !important;
+    }}
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 {{
+        color: {heading_color} !important;
+    }}
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
+        color: {text_primary} !important;
+        font-weight: 500 !important;
+    }}
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label p {{
+        color: {text_primary} !important;
+    }}
+    section[data-testid="stSidebar"] .stCaption,
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {{
+        color: {text_secondary} !important;
+    }}
+
+    /* High-Contrast Widget Labels */
+    label,
+    label p,
+    label span,
+    [data-testid="stWidgetLabel"],
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] span,
+    .stNumberInput label,
+    .stNumberInput label p,
+    .stSlider label,
+    .stSlider label p,
+    .stSelectbox label,
+    .stSelectbox label p,
+    .stTextInput label,
+    .stTextInput label p,
+    .stFileUploader label,
+    .stFileUploader label p,
+    .stRadio label,
+    .stRadio label p {{
+        color: {text_primary} !important;
+        font-weight: 600 !important;
+        font-size: 0.93rem !important;
+    }}
+
+    /* Standard Button Styling (Quick Presets & Actions) */
+    .stButton > button {{
+        background-color: {btn_bg} !important;
+        color: {btn_text} !important;
+        border: 1.5px solid {btn_border} !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 0.55rem 1rem !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease-in-out !important;
+    }}
+    .stButton > button:hover {{
+        background-color: {btn_hover_bg} !important;
+        border-color: {btn_hover_border} !important;
+        color: {btn_hover_text} !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+        transform: translateY(-1px) !important;
+    }}
+    .stButton > button:active {{
+        transform: translateY(0px) !important;
+    }}
+    .stButton > button p,
+    .stButton > button span {{
+        color: inherit !important;
+        font-weight: 600 !important;
+    }}
+
+    /* Primary Form Submit & Download Buttons */
+    [data-testid="stFormSubmitButton"] > button,
+    .stDownloadButton > button {{
+        background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        padding: 0.65rem 1.5rem !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+        transition: all 0.2s ease-in-out !important;
+    }}
+    [data-testid="stFormSubmitButton"] > button:hover,
+    .stDownloadButton > button:hover {{
+        background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%) !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
+        transform: translateY(-2px) !important;
+    }}
+    [data-testid="stFormSubmitButton"] > button p,
+    .stDownloadButton > button p {{
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+    }}
+
+    /* Input Fields (Number inputs, text inputs) */
+    div[data-baseweb="input"],
+    div[data-baseweb="base-input"] {{
+        background-color: {input_bg} !important;
+        border: 1.5px solid {input_border} !important;
+        border-radius: 10px !important;
+        color: {input_text} !important;
+    }}
+    div[data-baseweb="input"]:focus-within {{
+        border-color: #3B82F6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }}
+    div[data-baseweb="input"] input {{
+        color: {input_text} !important;
+        background-color: transparent !important;
+        font-weight: 600 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+    }}
+    button[data-testid="stNumberInputStepDown"],
+    button[data-testid="stNumberInputStepUp"] {{
+        background-color: {btn_bg} !important;
+        color: {text_primary} !important;
+        border-left: 1px solid {input_border} !important;
+        border-right: 1px solid {input_border} !important;
+    }}
+    button[data-testid="stNumberInputStepDown"]:hover,
+    button[data-testid="stNumberInputStepUp"]:hover {{
+        background-color: {btn_hover_bg} !important;
+        color: {btn_hover_text} !important;
+    }}
+    button[data-testid="stNumberInputStepDown"] svg,
+    button[data-testid="stNumberInputStepUp"] svg {{
+        fill: {text_primary} !important;
+    }}
+
+    /* Sliders */
+    div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stSlider"] span,
+    div[data-testid="stSliderTickBar"] > div,
+    div[data-baseweb="slider"] div {{
+        color: {text_secondary} !important;
+        font-weight: 600 !important;
+    }}
+
+    /* Selectbox & Menus */
+    div[data-baseweb="select"] > div {{
+        background-color: {input_bg} !important;
+        border: 1.5px solid {input_border} !important;
+        border-radius: 10px !important;
+        color: {input_text} !important;
+    }}
+    div[data-baseweb="select"] span,
+    div[data-baseweb="select"] div {{
+        color: {input_text} !important;
+        font-weight: 500 !important;
+    }}
+    div[data-baseweb="select"] svg {{
+        fill: {text_secondary} !important;
+    }}
+    ul[data-baseweb="menu"] {{
+        background-color: {card_bg} !important;
+        border: 1px solid {card_border} !important;
+    }}
+    li[data-baseweb="menu-item"] {{
+        color: {text_primary} !important;
+    }}
+    li[data-baseweb="menu-item"]:hover {{
+        background-color: {btn_hover_bg} !important;
+        color: {btn_hover_text} !important;
+    }}
+
+    /* Form Container */
+    div[data-testid="stForm"] {{
+        background-color: {form_bg} !important;
+        border: 1.5px solid {form_border} !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        box-shadow: {card_shadow} !important;
+    }}
+
+    /* Tabs */
+    button[data-baseweb="tab"] {{
+        color: {tab_text} !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }}
+    button[data-baseweb="tab"][aria-selected="true"] {{
+        color: {tab_active_text} !important;
+    }}
+    div[data-baseweb="tab-highlight"] {{
+        background-color: {tab_active_border} !important;
+    }}
+    div[data-baseweb="tab-border"] {{
+        background-color: {card_border} !important;
+    }}
+
+    /* Native Metric Cards */
+    div[data-testid="stMetric"] {{
+        background: {metric_card_bg} !important;
+        border: 1px solid {card_border} !important;
+        border-radius: 12px !important;
+        padding: 0.8rem 1rem !important;
+        box-shadow: {card_shadow} !important;
+    }}
+    div[data-testid="stMetricLabel"] p,
+    div[data-testid="stMetricLabel"] label {{
+        color: {metric_label_color} !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }}
+    div[data-testid="stMetricValue"] div {{
+        color: {metric_num_color} !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-weight: 800 !important;
+        font-size: 1.6rem !important;
+    }}
+
+    /* File Uploader */
+    [data-testid="stFileUploader"] section {{
+        background-color: {input_bg} !important;
+        border: 2px dashed {input_border} !important;
+        border-radius: 12px !important;
+    }}
+    [data-testid="stFileUploader"] section p,
+    [data-testid="stFileUploader"] section span {{
+        color: {text_primary} !important;
+    }}
+
+    /* Captions & Notes */
+    .stCaption,
+    [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] p {{
+        color: {text_secondary} !important;
+        font-weight: 500 !important;
+    }}
+
+    /* Custom Metric Card (HTML) */
     .metric-card {{
         background: {card_bg};
         border: 1px solid {card_border};
         border-radius: 14px;
         padding: 1.2rem;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        box-shadow: {card_shadow};
         transition: transform 0.2s ease, border-color 0.2s ease;
     }}
     .metric-card:hover {{
@@ -205,6 +528,7 @@ st.markdown(f"""
         margin-top: 0.2rem;
     }}
 
+    /* Prediction Banner */
     .prediction-box {{
         background: {pred_box_bg};
         border: 2px solid {pred_box_border};
@@ -236,12 +560,6 @@ st.markdown(f"""
         color: {pred_sub_color};
         font-size: 0.95rem;
         font-weight: 600;
-    }}
-
-    .stButton>button {{
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.2s;
     }}
 </style>
 """, unsafe_allow_html=True)
